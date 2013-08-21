@@ -6,21 +6,35 @@
 package.path = package.path .. ";src/?.lua"
 
 local LuaClass = require "LuaClass"
-local json = require "json"
 
 local ClassA = LuaClass:create()
 
-function ClassA.printStr(str)
-	print("A:", str)
+ClassA.a = 0
+
+function ClassA:incA()
+	self.a = self.a + 1
+	print("ClassA inc")
 end
 
 
 local ClassB = LuaClass:create(ClassA)
 
-function ClassB.printStr(str)
-	print("B:", str)
+function ClassB:incA()
+	self.super:incA()
+	self.a = self.a + 2
+	print("ClassB inc")
 end
 
 
-local objB = ClassB:new()
-objB.printStr("ok")
+local ClassC = LuaClass:create(ClassB)
+
+function ClassC:incA()
+	self.super:incA()
+	self.a = self.a + 3
+	print("ClassC inc")
+end
+
+local objC = ClassC:new()
+objC:incA()
+print(objC.a)
+
