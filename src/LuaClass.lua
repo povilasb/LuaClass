@@ -17,7 +17,6 @@ function table.copy(t)
 	local retval = {}
 
 	for k, v in pairs(t) do
-		print("cp:", k)
 		retval[k] = v
 	end
 
@@ -26,6 +25,26 @@ end
 
 
 local LuaClass = {}
+
+
+---
+-- Creates a new object of the specified class.
+-- If class has defined an init function, it is called on new object
+-- creation.
+-
+-- @param selfClass table class whose object will be created.
+-- @return table created object.
+---
+function LuaClass.create_object(selfClass, ...)
+	local newObj = {}
+	setmetatable(newObj, selfClass)
+
+	if selfClass._init then
+		selfClass._init(newObj, ...)
+	end
+
+	return newObj
+end
 
 
 -- PUBLIC
@@ -58,9 +77,10 @@ function LuaClass:create(base)
 
 	-- search for method or field in ancestor classes
 	setmetatable(newClass, {__index = function(t, k)
-		for _, ancestor in ipairs(t._ancestorList) do
-			if ancestor[k] ~= nil then
-				return ancestor[k]
+		-- must search backwards in ancestor list
+		for i = #t._ancestorList, 1, -1 do
+			if t._ancestorList[i][k] ~= nil then
+				return t._ancestorList[i][k]
 			end
 		end
 
@@ -71,11 +91,7 @@ function LuaClass:create(base)
 	newClass.__index = newClass
 
 	-- class methods
-	newClass.new = function(selfClass)
-		local newObj = {}
-		setmetatable(newObj, selfClass)
-		return newObj
-	end
+	newClass.new = LuaClass.create_object
 
 	return newClass
 end
