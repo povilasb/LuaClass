@@ -1,5 +1,16 @@
 ---
--- LuaClass implements functions to create classes in lua.
+-- LuaClass implements functions to create classes in lua. It supports
+-- multiple level inheritance, constructor.
+--
+-- LuaClass classes and objects have some special fields and methods. They
+-- start wih a prefix '_'. E.g. _class.
+--
+-- _class - pointer to an object class.
+-- _name - class name.
+-- _init() - class constructor that is invoked every time SomeClass:new() is
+--	invoked.
+-- _super - if class has inherited from some other class, _super points to
+--	that other class.
 --
 
 -- PRIVATE
@@ -32,7 +43,7 @@ local LuaClass = {}
 -- If class has defined an _init function, it is called on new object
 -- creation. Inside init function self variable refers to the created object.
 --
--- @param selfClass table class whose object will be created.
+-- @param {table} selfClass class whose object will be created.
 -- @return table created object.
 ---
 function LuaClass.createObject(selfClass, ...)
@@ -43,7 +54,37 @@ function LuaClass.createObject(selfClass, ...)
 		selfClass._init(newObj, ...)
 	end
 
+	newObj._class = selfClass
+
 	return newObj
+end
+
+
+---
+-- Checks if specified object inherits from the specified class. Object
+-- class also counts.
+--
+-- @param {table} selfObj object that is checked.
+-- @param {table} class class to check if specified object inherits from.
+-- @return {boolean} true if specified object inherits from the specified
+--	class, false otherwise.
+---
+function LuaClass.inheritsFrom(selfObj, class)
+	local selfClass = selfObj._class
+
+	-- check object class
+	if selfClass._name == class._name then
+		return true
+	-- check ancestor class list
+	else
+		for i = #selfClass._ancestorList, 1, -1 do
+			if selfClass._ancestorList[i]._name == class._name then
+				return true
+			end
+		end
+	end
+
+	return false
 end
 
 
@@ -54,14 +95,18 @@ LuaClass.version = "0.1.0"
 
 
 ---
--- Creates a new class.
+-- Creates a new class with the specified name.
 --
+-- @param {string} name class name.
 -- @param {table} class that will be extended. Might be nil, in such case
 --	no class is extended.
 -- @return {table} table representing lua class.
 ---
-function LuaClass:create(base)
+function LuaClass:create(name, base)
+	assert(name)
+
 	local newClass = {}
+	newClass._name = name
 
 	-- make a copy of base class super class list
 	if base and type(base._ancestorList) == "table" then
@@ -72,7 +117,7 @@ function LuaClass:create(base)
 
 	if base then
 		table.insert(newClass._ancestorList, base)
-		newClass.super = base
+		newClass._super = base
 	end
 
 	-- search for method or field in ancestor classes
@@ -92,6 +137,7 @@ function LuaClass:create(base)
 
 	-- class methods
 	newClass.new = LuaClass.createObject
+	newClass.inheritsFrom = LuaClass.inheritsFrom
 
 	return newClass
 end
