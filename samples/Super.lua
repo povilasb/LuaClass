@@ -7,43 +7,42 @@ package.path = package.path .. ";src/?.lua"
 
 local LuaClass = require "LuaClass"
 
-local ClassA = LuaClass:create()
+local ClassA = LuaClass:create("ClassA")
 
-function ClassA:_init(name, param1)
-	self.name = name
+function ClassA:_init(param1)
 	self.param1 = param1
 	print("Constructor of ClassA")
 end
 
 
-local ClassB = LuaClass:create(ClassA)
+local ClassB = LuaClass:create("ClassB", ClassA)
 
 
 ---
 -- self refers to the object that was created.
 ---
-function ClassB:_init(name, param1, param2)
-	ClassB.super._init(self, name, param1)
+function ClassB:_init(param1, param2)
+	ClassB._super._init(self, param1)
 	self.param2 = param2
 
 	print("Constructor of ClassB")
 end
 
 
-local ClassC = LuaClass:create(ClassB)
+local ClassC = LuaClass:create("ClassC", ClassB)
 
 
 ---
 -- self refers to the object that was created.
 ---
-function ClassC:_init(name, param1, param2)
-	ClassC.super._init(self, name, param1, param2)
+function ClassC:_init(param1, param2)
+	ClassC._super._init(self, param1, param2)
 
 	print("Constructor of ClassC")
 end
 
-local objC = ClassC:new("ClassC", 10, 11)
+local objC = ClassC:new(10, 11)
 
-print("Class name: " .. objC.name)
+print("Class name: " .. objC._name)
 print("Object field: ", objC.param1);
 print("Object field 2: ", objC.param2);

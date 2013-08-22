@@ -7,7 +7,7 @@ package.path = package.path .. ";src/?.lua"
 
 local LuaClass = require "LuaClass"
 
-local ClassA = LuaClass:create()
+local ClassA = LuaClass:create("ClassA")
 
 function ClassA:_init(name, param1)
 	self.name = name

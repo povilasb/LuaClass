@@ -7,7 +7,7 @@ package.path = package.path .. ";src/?.lua"
 
 local LuaClass = require "LuaClass"
 
-local ClassA = LuaClass:create()
+local ClassA = LuaClass:create("ClassA")
 
 ClassA.a = 0
 
@@ -17,7 +17,7 @@ function ClassA:incA()
 end
 
 
-local ClassB = LuaClass:create(ClassA)
+local ClassB = LuaClass:create("ClassB", ClassA)
 
 function ClassB:incA()
 	self.super:incA()
@@ -26,7 +26,7 @@ function ClassB:incA()
 end
 
 
-local ClassC = LuaClass:create(ClassB)
+local ClassC = LuaClass:create("ClassC", ClassB)
 
 function ClassC:incA()
 	self.super:incA()
@@ -37,4 +37,3 @@ end
 local objC = ClassC:new()
 objC:incA()
 print(objC.a)
-
