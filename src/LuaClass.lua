@@ -31,7 +31,7 @@ local LuaClass = {}
 -- Creates a new object of the specified class.
 -- If class has defined an init function, it is called on new object
 -- creation.
--
+--
 -- @param selfClass table class whose object will be created.
 -- @return table created object.
 ---
