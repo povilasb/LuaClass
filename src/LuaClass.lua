@@ -35,7 +35,7 @@ local LuaClass = {}
 -- @param selfClass table class whose object will be created.
 -- @return table created object.
 ---
-function LuaClass.create_object(selfClass, ...)
+function LuaClass.createObject(selfClass, ...)
 	local newObj = {}
 	setmetatable(newObj, selfClass)
 
@@ -91,7 +91,7 @@ function LuaClass:create(base)
 	newClass.__index = newClass
 
 	-- class methods
-	newClass.new = LuaClass.create_object
+	newClass.new = LuaClass.createObject
 
 	return newClass
 end
