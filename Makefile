@@ -9,6 +9,7 @@ help:
 	@echo "\tBasicSample - executes basic sample."
 	@echo "\tConstructor - executes sample that demonstrates constructor \
 use."
+	@echo "\tSuper - executes sample that demonstrates super class use."
 	@echo ""
 
 BasicSample:
