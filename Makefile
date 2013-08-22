@@ -14,7 +14,12 @@ use."
 BasicSample:
 	$(LUA) samples/$@.lua
 
+
 Constructor:
+	$(LUA) samples/$@.lua
+
+
+Super:
 	$(LUA) samples/$@.lua
 
 
