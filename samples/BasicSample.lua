@@ -20,7 +20,7 @@ end
 local ClassB = LuaClass:create("ClassB", ClassA)
 
 function ClassB:incA()
-	self.super:incA()
+	self._super:incA()
 	self.a = self.a + 2
 	print("ClassB inc")
 end
@@ -29,7 +29,7 @@ end
 local ClassC = LuaClass:create("ClassC", ClassB)
 
 function ClassC:incA()
-	self.super:incA()
+	self._super:incA()
 	self.a = self.a + 3
 	print("ClassC inc")
 end
@@ -37,3 +37,10 @@ end
 local objC = ClassC:new()
 objC:incA()
 print(objC.a)
+
+print("objC instance of ClassC: ", ClassC:isInstance(objC))
+print("objC instance of ClassB: ", ClassB:isInstance(objC))
+
+local objA = ClassA:new()
+
+print("objA instance of ClassC: ", ClassC:isInstance(objA))
