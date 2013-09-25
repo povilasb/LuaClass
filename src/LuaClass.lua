@@ -88,10 +88,31 @@ function LuaClass.inheritsFrom(selfObj, class)
 end
 
 
+---
+-- Checks if the specified object is instance of the specified class or any
+-- of it's ancestor classes.
+--
+-- @param {LuaClass} selfClass LuaClass created class.
+-- @param {any} object object to check if it is an instance of the specified
+--	class.
+-- @return {boolean} true if the specified object is an instance of the
+--	specified class or it's ancestors, false otherwise.
+---
+function LuaClass.isInstance(selfClass, object)
+	local retval = false
+
+	if object._class and object.inheritsFrom then
+		retval = object:inheritsFrom(selfClass)
+	end
+
+	return retval
+end
+
+
 -- PUBLIC
 
 
-LuaClass.version = "0.1.0"
+LuaClass.VERSION = "0.2.0"
 
 
 ---
@@ -138,6 +159,7 @@ function LuaClass:create(name, base)
 	-- class methods
 	newClass.new = LuaClass.createObject
 	newClass.inheritsFrom = LuaClass.inheritsFrom
+	newClass.isInstance = LuaClass.isInstance
 
 	return newClass
 end
